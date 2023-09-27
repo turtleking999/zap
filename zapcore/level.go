@@ -45,6 +45,10 @@ const (
 	// ErrorLevel logs are high-priority. If an application is running smoothly,
 	// it shouldn't generate any error-level logs.
 	ErrorLevel
+
+	// SystemLevel logs system-specific messages.
+	SystemLevel
+
 	// DPanicLevel logs are particularly important errors. In development the
 	// logger panics after writing the message.
 	DPanicLevel
@@ -52,11 +56,9 @@ const (
 	PanicLevel
 	// FatalLevel logs a message, then calls os.Exit(1).
 	FatalLevel
-	// SystemLevel logs system-specific messages.
-	SystemLevel
 
 	_minLevel = TraceLevel
-	_maxLevel = SystemLevel
+	_maxLevel = FatalLevel
 
 	// InvalidLevel is an invalid value for Level.
 	//
