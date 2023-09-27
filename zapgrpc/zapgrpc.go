@@ -30,20 +30,24 @@ import (
 
 // See https://github.com/grpc/grpc-go/blob/v1.35.0/grpclog/loggerv2.go#L77-L86
 const (
-	grpcLvlInfo int = iota
+	grpcLvlTrace int = iota
+	grpcLvlInfo
 	grpcLvlWarn
 	grpcLvlError
 	grpcLvlFatal
+	grpcLvlSystem
 )
 
 var (
 	// _grpcToZapLevel maps gRPC log levels to zap log levels.
 	// See https://pkg.go.dev/go.uber.org/zap@v1.16.0/zapcore#Level
 	_grpcToZapLevel = map[int]zapcore.Level{
-		grpcLvlInfo:  zapcore.InfoLevel,
-		grpcLvlWarn:  zapcore.WarnLevel,
-		grpcLvlError: zapcore.ErrorLevel,
-		grpcLvlFatal: zapcore.FatalLevel,
+		grpcLvlTrace:  zapcore.TraceLevel,
+		grpcLvlInfo:   zapcore.InfoLevel,
+		grpcLvlWarn:   zapcore.WarnLevel,
+		grpcLvlError:  zapcore.ErrorLevel,
+		grpcLvlFatal:  zapcore.FatalLevel,
+		grpcLvlSystem: zapcore.SystemLevel,
 	}
 )
 
@@ -181,6 +185,34 @@ func (l *Logger) Infoln(args ...interface{}) {
 
 // Infof implements grpclog.LoggerV2.
 func (l *Logger) Infof(format string, args ...interface{}) {
+	l.delegate.Infof(format, args...)
+}
+
+func (l *Logger) Trace(args ...interface{}) {
+	l.delegate.Debug(args...)
+}
+
+func (l *Logger) Traceln(args ...interface{}) {
+	if l.levelEnabler.Enabled(zapcore.DebugLevel) {
+		l.delegate.Debug(sprintln(args))
+	}
+}
+
+func (l *Logger) Tracef(format string, args ...interface{}) {
+	l.delegate.Debugf(format, args...)
+}
+
+func (l *Logger) System(args ...interface{}) {
+	l.delegate.Info(args...)
+}
+
+func (l *Logger) Systemln(args ...interface{}) {
+	if l.levelEnabler.Enabled(zapcore.InfoLevel) {
+		l.delegate.Info(sprintln(args))
+	}
+}
+
+func (l *Logger) Systemf(format string, args ...interface{}) {
 	l.delegate.Infof(format, args...)
 }
 

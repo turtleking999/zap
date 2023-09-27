@@ -32,9 +32,11 @@ var errUnmarshalNilLevel = errors.New("can't unmarshal a nil *Level")
 type Level int8
 
 const (
+	// TraceLevel logs are the finest granularity of logs, mostly for detailed debugging
+	TraceLevel Level = iota - 2
 	// DebugLevel logs are typically voluminous, and are usually disabled in
 	// production.
-	DebugLevel Level = iota - 1
+	DebugLevel
 	// InfoLevel is the default logging priority.
 	InfoLevel
 	// WarnLevel logs are more important than Info, but don't need individual
@@ -50,9 +52,11 @@ const (
 	PanicLevel
 	// FatalLevel logs a message, then calls os.Exit(1).
 	FatalLevel
+	// SystemLevel logs system-specific messages.
+	SystemLevel
 
-	_minLevel = DebugLevel
-	_maxLevel = FatalLevel
+	_minLevel = TraceLevel
+	_maxLevel = SystemLevel
 
 	// InvalidLevel is an invalid value for Level.
 	//
@@ -112,6 +116,8 @@ func LevelOf(enab LevelEnabler) Level {
 // String returns a lower-case ASCII representation of the log level.
 func (l Level) String() string {
 	switch l {
+	case TraceLevel:
+		return "trace"
 	case DebugLevel:
 		return "debug"
 	case InfoLevel:
@@ -126,6 +132,8 @@ func (l Level) String() string {
 		return "panic"
 	case FatalLevel:
 		return "fatal"
+	case SystemLevel:
+		return "system"
 	default:
 		return fmt.Sprintf("Level(%d)", l)
 	}
@@ -179,6 +187,8 @@ func (l *Level) UnmarshalText(text []byte) error {
 
 func (l *Level) unmarshalText(text []byte) bool {
 	switch string(text) {
+	case "trace", "TRACE":
+		*l = TraceLevel
 	case "debug", "DEBUG":
 		*l = DebugLevel
 	case "info", "INFO", "": // make the zero value useful
@@ -193,6 +203,8 @@ func (l *Level) unmarshalText(text []byte) bool {
 		*l = PanicLevel
 	case "fatal", "FATAL":
 		*l = FatalLevel
+	case "system", "SYSTEM":
+		*l = SystemLevel
 	default:
 		return false
 	}

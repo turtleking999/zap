@@ -28,6 +28,7 @@ import (
 )
 
 const (
+	TraceLevel = zapcore.TraceLevel
 	// DebugLevel logs are typically voluminous, and are usually disabled in
 	// production.
 	DebugLevel = zapcore.DebugLevel
@@ -46,6 +47,8 @@ const (
 	PanicLevel = zapcore.PanicLevel
 	// FatalLevel logs a message, then calls os.Exit(1).
 	FatalLevel = zapcore.FatalLevel
+
+	SystemLevel = zapcore.SystemLevel
 )
 
 // LevelEnablerFunc is a convenient way to implement zapcore.LevelEnabler with
