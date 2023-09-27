@@ -144,6 +144,8 @@ func (l Level) CapitalString() string {
 	// Printing levels in all-caps is common enough that we should export this
 	// functionality.
 	switch l {
+	case TraceLevel:
+		return "TRACE"
 	case DebugLevel:
 		return "DEBUG"
 	case InfoLevel:
@@ -158,6 +160,8 @@ func (l Level) CapitalString() string {
 		return "PANIC"
 	case FatalLevel:
 		return "FATAL"
+	case SystemLevel:
+		return "SYSTEM"
 	default:
 		return fmt.Sprintf("LEVEL(%d)", l)
 	}
