@@ -231,6 +231,13 @@ func (log *Logger) Log(lvl zapcore.Level, msg string, fields ...Field) {
 	}
 }
 
+// Trace
+func (log *Logger) Trace(msg string, fields ...Field) {
+	if ce := log.check(TraceLevel, msg); ce != nil {
+		ce.Write(fields...)
+	}
+}
+
 // Debug logs a message at DebugLevel. The message includes any fields passed
 // at the log site, as well as any fields accumulated on the logger.
 func (log *Logger) Debug(msg string, fields ...Field) {
@@ -292,6 +299,13 @@ func (log *Logger) Panic(msg string, fields ...Field) {
 // disabled.
 func (log *Logger) Fatal(msg string, fields ...Field) {
 	if ce := log.check(FatalLevel, msg); ce != nil {
+		ce.Write(fields...)
+	}
+}
+
+// System
+func (log *Logger) System(msg string, fields ...Field) {
+	if ce := log.check(SystemLevel, msg); ce != nil {
 		ce.Write(fields...)
 	}
 }
